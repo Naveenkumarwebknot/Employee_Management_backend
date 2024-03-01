@@ -5,6 +5,10 @@ import com.example.employee_management.crud.model.Timesheet;
 import com.example.employee_management.crud.repository.TimeSheetRepository;
 import error.TimesheetElementNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -17,12 +21,12 @@ import java.util.Optional;
 public class TimeSheetService {
     @Autowired
     private TimeSheetRepository timeSheetRepository;
-
+    @Cacheable(value = "timesheet")
     public List<Timesheet> getAllTimeSheet(){
         return timeSheetRepository.findAll();
     }
 
-
+    @Cacheable(value = "timesheet", key = "#id")
     public Timesheet getTimeSheetById(Long id) throws TimesheetElementNotFoundException {
         Optional<Timesheet> timesheetElementOptional = timeSheetRepository.findById(id);
         if (timesheetElementOptional.isPresent()) {
@@ -36,6 +40,10 @@ public class TimeSheetService {
         return timeSheetRepository.save(timesheet);
     }
 
+    @Caching(
+            evict = {@CacheEvict(value = "timesheet", allEntries = true)},
+            put = {@CachePut(value = "timesheet", key = "#Blog.id")}
+    )
     public Timesheet updateTimesheet(Long id, Timesheet TimeSheetDetails) throws TimesheetElementNotFoundException {
         Timesheet timesheet = getTimeSheetById(id);
         timesheet.setEmployeeName(TimeSheetDetails.getEmployeeName());

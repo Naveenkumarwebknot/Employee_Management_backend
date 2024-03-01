@@ -6,6 +6,10 @@ import com.example.employee_management.crud.model.UserApp;
 import com.example.employee_management.crud.repository.UserRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -19,7 +23,7 @@ import java.util.Optional;
 public class UserService {
     @Autowired
     UserRepository userRepository;
-
+    @Cacheable(value = "Users")
     public List<UserApp> fetchAllUsers(){
         return userRepository.findAll();
     }
@@ -29,6 +33,7 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    @Cacheable(value = "users", key = "#id")
     public UserApp fetchUserById(Long Id) throws UserNotFoundException {
         Optional<UserApp> userRecord = userRepository.findById(Id);
         if(!userRecord.isPresent()){
@@ -36,7 +41,10 @@ public class UserService {
         }
         return userRecord.get();
     }
-
+    @Caching(
+            evict = {@CacheEvict(value = "users", allEntries = true)},
+            put = {@CachePut(value = "users", key = "#Blog.id")}
+    )
     public UserApp updateUser(Long tId, UserApp user) throws UserNotFoundException {
         Optional<UserApp> isExisting = userRepository.findById(tId);
 
@@ -59,6 +67,7 @@ public class UserService {
     }
 
     //Delete a record from the table
+    @CacheEvict(cacheNames = "users", allEntries = true)
     public String deleteUser(Long Id) throws UserNotFoundException {
         Optional<UserApp> userRecord = userRepository.findById(Id);
         if(!userRecord.isPresent()){
