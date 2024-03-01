@@ -5,6 +5,7 @@ import com.example.employee_management.crud.model.Timesheet;
 import com.example.employee_management.crud.service.TimeSheetService;
 import error.TimesheetElementNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,4 +39,21 @@ public class TimeSheetController {
         return ResponseEntity.ok(updatedtimesheet);
     }
 
+    @GetMapping("/name/{field}")
+    private ResponseEntity<List<Timesheet>> getTimesheetWithSort(@PathVariable String field) {
+        List<Timesheet> allProducts = timesheetservice.findTimesheetWithSorting(field);
+        return  ResponseEntity.ok(allProducts);
+    }
+
+    @GetMapping("/pagination/{offset}/{pageSize}")
+    private ResponseEntity<Page<Timesheet>> getEmployeeWithPagination(@PathVariable int offset, @PathVariable int pageSize) {
+        Page<Timesheet> productsWithPagination = timesheetservice.findTimesheetWithPagination(offset, pageSize);
+        return ResponseEntity.ok(productsWithPagination);
+    }
+
+    @GetMapping("/paginationAndSort/{offset}/{pageSize}/{field}")
+    private ResponseEntity<Page<Timesheet>> getProductsWithPaginationAndSort(@PathVariable int offset, @PathVariable int pageSize,@PathVariable String field) {
+        Page<Timesheet> productsWithPagination = timesheetservice.findTimesheetWithPaginationAndSorting(offset, pageSize, field);
+        return ResponseEntity.ok(productsWithPagination);
+    }
 }

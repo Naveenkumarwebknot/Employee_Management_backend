@@ -1,10 +1,14 @@
 package com.example.employee_management.crud.service;
 
 
+import com.example.employee_management.crud.model.Timesheet;
 import com.example.employee_management.crud.model.UserApp;
 import com.example.employee_management.crud.repository.UserRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import error.UserNotFoundException;
 import java.util.List;
@@ -63,6 +67,21 @@ public class UserService {
 
         userRepository.deleteById(Id);
         return ("User with id:"+Id+" successfully deleted !!");
+    }
+
+    public List<UserApp> findUserWithSorting(String field){
+        return  userRepository.findAll(Sort.by(Sort.Direction.ASC,field));
+    }
+
+
+    public Page<UserApp> findUserWithPagination(int offset, int pageSize){
+        Page<UserApp> users = userRepository.findAll(PageRequest.of(offset, pageSize));
+        return  users;
+    }
+
+    public Page<UserApp> findUserWithPaginationAndSorting(int offset,int pageSize,String field){
+        Page<UserApp> users = userRepository.findAll(PageRequest.of(offset, pageSize).withSort(Sort.by(field)));
+        return  users;
     }
 
 }

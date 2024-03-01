@@ -1,9 +1,11 @@
 package com.example.employee_management.crud.controller;
 
+import com.example.employee_management.crud.model.Timesheet;
 import com.example.employee_management.crud.model.UserApp;
 import com.example.employee_management.crud.service.UserService;
 import error.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -40,6 +42,24 @@ public class UserController {
     @DeleteMapping("/delete-user/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable Long id) throws UserNotFoundException{
         return new ResponseEntity<String>(userService.deleteUser(id), HttpStatusCode.valueOf(200));
+    }
+
+    @GetMapping("/name/{field}")
+    private ResponseEntity<List<UserApp>> getTimesheetWithSort(@PathVariable String field) {
+        List<UserApp> allProducts = userService.findUserWithSorting(field);
+        return  ResponseEntity.ok(allProducts);
+    }
+
+    @GetMapping("/pagination/{offset}/{pageSize}")
+    private ResponseEntity<Page<UserApp>> getEmployeeWithPagination(@PathVariable int offset, @PathVariable int pageSize) {
+        Page<UserApp> productsWithPagination = userService.findUserWithPagination(offset, pageSize);
+        return ResponseEntity.ok(productsWithPagination);
+    }
+
+    @GetMapping("/paginationAndSort/{offset}/{pageSize}/{field}")
+    private ResponseEntity<Page<UserApp>> getProductsWithPaginationAndSort(@PathVariable int offset, @PathVariable int pageSize,@PathVariable String field) {
+        Page<UserApp> productsWithPagination = userService.findUserWithPaginationAndSorting(offset, pageSize, field);
+        return ResponseEntity.ok(productsWithPagination);
     }
 
 }

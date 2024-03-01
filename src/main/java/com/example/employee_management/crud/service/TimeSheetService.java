@@ -5,6 +5,9 @@ import com.example.employee_management.crud.model.Timesheet;
 import com.example.employee_management.crud.repository.TimeSheetRepository;
 import error.TimesheetElementNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -40,5 +43,20 @@ public class TimeSheetService {
         timesheet.setDescription(TimeSheetDetails.getDescription());
         timesheet.setHours(TimeSheetDetails.getHours());
         return timeSheetRepository.save(timesheet);
+    }
+
+    public List<Timesheet> findTimesheetWithSorting(String field){
+        return  timeSheetRepository.findAll(Sort.by(Sort.Direction.ASC,field));
+    }
+
+
+    public Page<Timesheet> findTimesheetWithPagination(int offset, int pageSize){
+        Page<Timesheet> timesheet = timeSheetRepository.findAll(PageRequest.of(offset, pageSize));
+        return  timesheet;
+    }
+
+    public Page<Timesheet> findTimesheetWithPaginationAndSorting(int offset,int pageSize,String field){
+        Page<Timesheet> timesheet = timeSheetRepository.findAll(PageRequest.of(offset, pageSize).withSort(Sort.by(field)));
+        return  timesheet;
     }
 }
