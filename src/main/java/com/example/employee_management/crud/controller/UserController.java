@@ -1,39 +1,45 @@
 package com.example.employee_management.crud.controller;
 
-import com.example.employee_management.crud.model.User;
+import com.example.employee_management.crud.model.UserApp;
 import com.example.employee_management.crud.service.UserService;
+import error.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api/user")
 public class UserController {
     @Autowired
-    private UserService  userService;
+    UserService userService;
 
-
-    @PostMapping("/signup")
-    public ResponseEntity<String> signUp(@RequestBody User user) {
-        User existingUser = userService.getUserByUsername(user.getUsername());
-        if (existingUser != null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username already exists!");
-        }
-        userService.createUser(user);
-        return ResponseEntity.status(HttpStatus.CREATED).body("User registered successfully!");
+    @GetMapping("/list-user")
+    public ResponseEntity<List<UserApp>> fetchUserList() {
+        return new ResponseEntity<>(userService.fetchAllUsers(), HttpStatusCode.valueOf(200));
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody User user) {
-        User existingUser = userService.getUserByUsername(user.getUsername());
-        if (existingUser == null || !existingUser.getPassword().equals(user.getPassword())) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password!");
-        }
-        return ResponseEntity.ok("Login successful!");
+
+    @GetMapping("/user/{id}")
+    public ResponseEntity<UserApp> fetchUserById(@PathVariable Long id) throws UserNotFoundException {
+        return new ResponseEntity<>(userService.fetchUserById(id), HttpStatusCode.valueOf(200));
+    }
+
+    @PostMapping("/create-user")
+    public ResponseEntity<UserApp> saveUser(@RequestBody UserApp user) {
+        return new ResponseEntity<>(userService.saveUser(user), HttpStatusCode.valueOf(200));
+    }
+
+    @PutMapping("/update-user/{id}")
+    public ResponseEntity<UserApp> updateUser(@PathVariable("id") Long Id, @RequestBody UserApp user) throws UserNotFoundException {
+        return new ResponseEntity<>(userService.updateUser(Id,user), HttpStatusCode.valueOf(200));
+    }
+
+    @DeleteMapping("/delete-user/{id}")
+    public ResponseEntity<String> deleteUser(@PathVariable Long id) throws UserNotFoundException{
+        return new ResponseEntity<String>(userService.deleteUser(id), HttpStatusCode.valueOf(200));
     }
 
 }
