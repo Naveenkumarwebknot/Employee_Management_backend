@@ -2,6 +2,7 @@ package com.example.employee_management.crud.controller;
 
 import com.example.employee_management.crud.model.Employee;
 import com.example.employee_management.crud.service.EmployeeService;
+import error.EmloyeeNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/employee")
+@RequestMapping("/api/user")
 public class EmployeeController {
     @Autowired
   private EmployeeService employeeService;
@@ -27,19 +28,19 @@ public class EmployeeController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Employee> getEmployeeById(@PathVariable Long id) {
+    public ResponseEntity<Employee> getEmployeeById(@PathVariable Long id) throws EmloyeeNotFoundException {
         Employee employee = employeeService.getEmployeeById(id);
         return ResponseEntity.ok(employee);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Employee> updateProduct(@PathVariable Long id, @RequestBody Employee employeeDetails) {
+    public ResponseEntity<Employee> updateProduct(@PathVariable Long id, @RequestBody Employee employeeDetails) throws EmloyeeNotFoundException {
         Employee updatedEmployee = employeeService.updateEmployee(id, employeeDetails);
         return ResponseEntity.ok(updatedEmployee);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Map<String, Boolean>> deleteProduct(@PathVariable Long id) {
+    public ResponseEntity<Map<String, Boolean>> deleteProduct(@PathVariable Long id) throws EmloyeeNotFoundException {
         employeeService.deleteEmployee(id);
         Map<String, Boolean> response = new HashMap<>();
         response.put("deleted", Boolean.TRUE);
