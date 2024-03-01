@@ -2,6 +2,7 @@ package com.example.employee_management.crud.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,4 +16,5 @@ public class Employee {
    String email;
    String role;
    String phoneNumber;
+
 }

@@ -5,8 +5,17 @@ import com.example.employee_management.crud.model.Timesheet;
 import com.example.employee_management.crud.repository.EmployeeRepository;
 import error.TimesheetElementNotFoundException;
 import error.EmloyeeNotFoundException;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
+
+
+
 
 import java.util.List;
 import java.util.Optional;
@@ -40,6 +49,7 @@ public class EmployeeService {
         employee.setEmail(employeeDetails.getEmail());
         employee.setRole(employeeDetails.getRole());
         employee.setPhoneNumber(employeeDetails.getPhoneNumber());
+
         return employeeRepository.save(employee);
     }
 
@@ -47,4 +57,20 @@ public class EmployeeService {
         Employee employee = getEmployeeById(id);
         employeeRepository.delete(employee);
     }
+
+    public List<Employee> findEmployeeWithSorting(String field){
+        return  employeeRepository.findAll(Sort.by(Sort.Direction.ASC,field));
+    }
+
+
+    public Page<Employee> findEmployeeWithPagination(int offset,int pageSize){
+        Page<Employee> employee = employeeRepository.findAll(PageRequest.of(offset, pageSize));
+        return  employee;
+    }
+
+    public Page<Employee> findEmployeeWithPaginationAndSorting(int offset,int pageSize,String field){
+        Page<Employee> employees = employeeRepository.findAll(PageRequest.of(offset, pageSize).withSort(Sort.by(field)));
+        return  employees;
+    }
+
 }

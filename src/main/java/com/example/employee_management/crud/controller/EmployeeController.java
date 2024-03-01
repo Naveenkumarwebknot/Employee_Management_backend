@@ -4,6 +4,7 @@ import com.example.employee_management.crud.model.Employee;
 import com.example.employee_management.crud.service.EmployeeService;
 import error.EmloyeeNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,6 +46,24 @@ public class EmployeeController {
         Map<String, Boolean> response = new HashMap<>();
         response.put("deleted", Boolean.TRUE);
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/name/{field}")
+    private ResponseEntity<List<Employee>> getEmployeeWithSort(@PathVariable String field) {
+        List<Employee> allProducts = employeeService.findEmployeeWithSorting(field);
+        return  ResponseEntity.ok(allProducts);
+    }
+
+    @GetMapping("/pagination/{offset}/{pageSize}")
+    private ResponseEntity<Page<Employee>> getEmployeeWithPagination(@PathVariable int offset, @PathVariable int pageSize) {
+        Page<Employee> productsWithPagination = employeeService.findEmployeeWithPagination(offset, pageSize);
+        return ResponseEntity.ok(productsWithPagination);
+    }
+
+    @GetMapping("/paginationAndSort/{offset}/{pageSize}/{field}")
+    private ResponseEntity<Page<Employee>> getProductsWithPaginationAndSort(@PathVariable int offset, @PathVariable int pageSize,@PathVariable String field) {
+        Page<Employee> productsWithPagination = employeeService.findEmployeeWithPaginationAndSorting(offset, pageSize, field);
+        return ResponseEntity.ok(productsWithPagination);
     }
 
 }
