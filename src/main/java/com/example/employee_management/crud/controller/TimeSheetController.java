@@ -39,19 +39,19 @@ public class TimeSheetController {
         return ResponseEntity.ok(updatedtimesheet);
     }
 
-    @GetMapping("/name/{field}")
+    @GetMapping("/time/name/{field}")
     private ResponseEntity<List<Timesheet>> getTimesheetWithSort(@PathVariable String field) {
         List<Timesheet> allProducts = timesheetservice.findTimesheetWithSorting(field);
         return  ResponseEntity.ok(allProducts);
     }
 
-    @GetMapping("/pagination/{offset}/{pageSize}")
+    @GetMapping("/time/pagination/{offset}/{pageSize}")
     private ResponseEntity<Page<Timesheet>> getEmployeeWithPagination(@PathVariable int offset, @PathVariable int pageSize) {
         Page<Timesheet> productsWithPagination = timesheetservice.findTimesheetWithPagination(offset, pageSize);
         return ResponseEntity.ok(productsWithPagination);
     }
 
-    @GetMapping("/paginationAndSort/{offset}/{pageSize}/{field}")
+    @GetMapping("/time/paginationAndSort/{offset}/{pageSize}/{field}")
     private ResponseEntity<Page<Timesheet>> getProductsWithPaginationAndSort(@PathVariable int offset, @PathVariable int pageSize,@PathVariable String field) {
         Page<Timesheet> productsWithPagination = timesheetservice.findTimesheetWithPaginationAndSorting(offset, pageSize, field);
         return ResponseEntity.ok(productsWithPagination);

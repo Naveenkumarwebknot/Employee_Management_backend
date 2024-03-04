@@ -44,19 +44,19 @@ public class UserController {
         return new ResponseEntity<String>(userService.deleteUser(id), HttpStatusCode.valueOf(200));
     }
 
-    @GetMapping("/name/{field}")
+    @GetMapping("/users/name/{field}")
     private ResponseEntity<List<UserApp>> getTimesheetWithSort(@PathVariable String field) {
         List<UserApp> allProducts = userService.findUserWithSorting(field);
         return  ResponseEntity.ok(allProducts);
     }
 
-    @GetMapping("/pagination/{offset}/{pageSize}")
+    @GetMapping("/users/pagination/{offset}/{pageSize}")
     private ResponseEntity<Page<UserApp>> getEmployeeWithPagination(@PathVariable int offset, @PathVariable int pageSize) {
         Page<UserApp> productsWithPagination = userService.findUserWithPagination(offset, pageSize);
         return ResponseEntity.ok(productsWithPagination);
     }
 
-    @GetMapping("/paginationAndSort/{offset}/{pageSize}/{field}")
+    @GetMapping("/users/paginationAndSort/{offset}/{pageSize}/{field}")
     private ResponseEntity<Page<UserApp>> getProductsWithPaginationAndSort(@PathVariable int offset, @PathVariable int pageSize,@PathVariable String field) {
         Page<UserApp> productsWithPagination = userService.findUserWithPaginationAndSorting(offset, pageSize, field);
         return ResponseEntity.ok(productsWithPagination);
